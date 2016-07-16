@@ -8,6 +8,6 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
-    </Grid>
+		<Image Name="Cam1Image" Width="200"  Margin="-90,0,0,0" />
+	</Grid>
 </Page>

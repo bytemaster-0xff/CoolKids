@@ -137,6 +137,10 @@
       <Project>{31680b21-5eb3-4f8b-81d7-1b0649c8ceb4}</Project>
       <Name>CoolKids.Camera</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CoolKids.Common\CoolKids.Common.csproj">
+      <Project>{b247f87e-2346-4d56-874c-773f076e0f8d}</Project>
+      <Name>CoolKids.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CoolKids.Services\CoolKids.Services.csproj">
       <Project>{0ba6e651-95dd-4f03-b25f-745cf882cdf0}</Project>
       <Name>CoolKids.Services</Name>
