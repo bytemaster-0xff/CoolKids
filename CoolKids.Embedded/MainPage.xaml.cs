@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
@@ -26,6 +27,12 @@ namespace CoolKids.Embedded
     {
         private Motion motionDetector;
 
+        private Relay relay1;
+
+        private RelayController relayController1;
+
+        private DispatcherTimer timer;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -35,6 +42,24 @@ namespace CoolKids.Embedded
             motionDetector.Changed += MotionDetector_Changed;
 
             motionDetector.Start();
+            
+            relay1 = new Relay();
+            relay1.InitGPIO();
+
+            relayController1 = new RelayController();
+            Task t = relayController1.Init("I2C0", 0x30);
+
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(2000);
+            timer.Tick += Timer_Tick;
+            timer.Start();
+        }
+
+        private void Timer_Tick(object sender, object e)
+        {
+            relay1.IsRelayOn = !relay1.IsRelayOn;
+
+            relayController1.IsRelayOn = !relayController1.IsRelayOn;
         }
 
         private void MotionDetector_Changed(bool MotionDetected)
@@ -48,6 +73,14 @@ namespace CoolKids.Embedded
                 tbMessage.Text = "Motion not detected";
             }
             //throw new NotImplementedException();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            relay1.IsRelayOn = !relay1.IsRelayOn;
+
+
+            relayController1.IsRelayOn = !relayController1.IsRelayOn;
         }
     }
 }
