@@ -137,6 +137,10 @@
       <Project>{9737F8FD-88DA-4458-9237-841F622AECE1}</Project>
       <Name>CoolKids.HomeAutomation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\CoolKids.Services\CoolKids.Services.csproj">
+      <Project>{0ba6e651-95dd-4f03-b25f-745cf882cdf0}</Project>
+      <Name>CoolKids.Services</Name>
+    </ProjectReference>
     <ProjectReference Include="..\CoolKids.WinIoT\CoolKids.WinIoT.csproj">
       <Project>{e6c54247-c4d9-49b4-b5d7-d76efeb251de}</Project>
       <Name>CoolKids.WinIoT</Name>
