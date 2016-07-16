@@ -9,22 +9,29 @@ using Windows.UI.Xaml;
 
 namespace CoolKids.Uwp.Embedded.GPIO
 {
+
+
     public delegate void MotionDetectedEventHandler(bool MotionDetected);
 
     public class Motion
     {
         private int MOTION_PIN;
-        
+
         private GpioPin pin = null;
 
         private DispatcherTimer timer;
 
         public event MotionDetectedEventHandler Changed;
 
-        private bool MotionDetected = false;
+        private bool motionDetected = false;
 
         ~Motion()
         {
+            if (timer != null)
+            {
+                timer.Stop();
+            }
+
             if (pin != null)
             {
                 pin.Dispose();
@@ -62,27 +69,28 @@ namespace CoolKids.Uwp.Embedded.GPIO
             }
         }
 
-
         private void Timer_Tick(object sender, object e)
         {
             var value = pin.Read().ToString();
-            
+
 
             bool newMotionDetected = value == "High";
 
-            if (newMotionDetected != MotionDetected)
+            if (newMotionDetected != motionDetected)
             {
                 Debug.WriteLine("GPIO pin value: " + value);
 
-                MotionDetected = newMotionDetected;
+                motionDetected = newMotionDetected;
 
                 if (Changed != null)
                 {
-                    Changed(MotionDetected);
+                    Changed(motionDetected);
                 }
             }
 
         }
 
     }
+
+
 }
