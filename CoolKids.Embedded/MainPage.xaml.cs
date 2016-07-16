@@ -42,17 +42,12 @@ namespace CoolKids.Embedded
             motionDetector.Changed += MotionDetector_Changed;
 
             motionDetector.Start();
-
-
-
+            
             relay1 = new Relay();
             relay1.InitGPIO();
 
             relayController1 = new RelayController();
-            Task t = relayController1.Init("I2C0");
-
-
-
+            Task t = relayController1.Init("I2C0", 0x30);
 
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(2000);

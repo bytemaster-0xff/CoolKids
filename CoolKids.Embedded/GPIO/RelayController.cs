@@ -16,12 +16,12 @@ namespace CoolKids.Uwp.Embedded.GPIO
         {
         }
 
-        public async Task Init(string i2cDeviceId)
+        public async Task Init(string i2cDeviceId = "I2C0", int slaveAddress = 0x30)
         {
             IsDemoMode = String.IsNullOrEmpty(i2cDeviceId);
             if (!IsDemoMode)
             {
-                var settings = new I2cConnectionSettings(0x30)
+                var settings = new I2cConnectionSettings(slaveAddress)
                 {
                     BusSpeed = I2cBusSpeed.StandardMode,
                     SharingMode = I2cSharingMode.Shared
@@ -30,18 +30,6 @@ namespace CoolKids.Uwp.Embedded.GPIO
             }
         }
 
-        public void Send(bool value)
-        {
-            if (!IsDemoMode)
-            {
-                byte[] values = new byte[] { (value ? (byte)0x01 : (byte)0x00) };
-
-                _relayControllerChannel.Write(values);
-            }
-        }
-
-
-
         private bool relayOn = false;
 
         public bool IsRelayOn
@@ -49,7 +37,8 @@ namespace CoolKids.Uwp.Embedded.GPIO
             get { return relayOn; }
             set
             {
-                if (!IsDemoMode)
+                if (!IsDemoMode &&
+                    _relayControllerChannel != null)
                 {
                     relayOn = value;
 
