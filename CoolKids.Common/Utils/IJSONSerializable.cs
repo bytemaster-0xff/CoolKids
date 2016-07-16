@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CoolKids.Camera
+namespace CoolKids.Common.Utils
 {
-    public class Class1
+    public interface IJSONSerializable
     {
+        String ToJSON();
     }
 }
