@@ -21,6 +21,10 @@ using System.Xml.Linq;
 using CoolKids.Common;
 using CoolKids.Common.IOC;
 using CoolKids.Common.PlatformSupport;
+using Windows.Storage.Streams;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Media;
+using System.Runtime.CompilerServices;
 
 namespace CoolKids.Camera.Models
 {
@@ -166,6 +170,24 @@ namespace CoolKids.Camera.Models
 
 			if (this.PropertyChanged != null)
 				this.PropertyChanged(this, new PropertyChangedEventArgs(this.GetPropertyNameFromExpression(propertyExpression)));
+		}
+
+		protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			var eventHandler = this.PropertyChanged;
+			if (eventHandler != null)
+			{
+				eventHandler(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+
+		protected bool Set<T>(ref T storage, T value, string columnName = null, [CallerMemberName] string propertyName = null)
+		{
+			if (object.Equals(storage, value)) return false;
+
+			storage = value;
+			this.RaisePropertyChanged(propertyName);
+			return true;
 		}
 
 
@@ -353,6 +375,8 @@ namespace CoolKids.Camera.Models
 				}
 			}
 		}
+
+		private string CompositeStaticImageUrl => string.Concat("http://", Url, ":", Port, "/image/jpeg.cgi?ticks={0}");
 
 		private UInt16 _port;
 		[DataMember]
@@ -1275,6 +1299,33 @@ namespace CoolKids.Camera.Models
 
 		HttpWebRequest _activeReqeust;
 
+		public async Task DownloadImage()
+		{
+			var request = System.Net.HttpWebRequest.CreateHttp(string.Format(CompositeStaticImageUrl, DateTime.Now.ToFileTime()));
+
+			if (!string.IsNullOrEmpty(UserName) || !string.IsNullOrEmpty(Password))
+				request.Credentials = new NetworkCredential(UserName, Password);
+
+			using (var response = await request.GetResponseAsync())
+			using (var stream = response.GetResponseStream())
+			using (var ms = new MemoryStream())
+			using (var randomAccessStream = new InMemoryRandomAccessStream())
+			{
+				stream.CopyTo(ms);
+				var buffer = ms.ToArray();
+
+				var writeStream = randomAccessStream.AsStreamForWrite();
+				await writeStream.WriteAsync(buffer, 0, buffer.Count());
+				await writeStream.FlushAsync();
+
+				randomAccessStream.Seek(0);
+				var image = new BitmapImage();
+				await image.SetSourceAsync(randomAccessStream);
+
+				CurrentPicture = image;
+			}
+		}
+
 		public async void StartCameraStream()
 		{
 			await GetCGIAPIParams();
@@ -1329,6 +1380,20 @@ namespace CoolKids.Camera.Models
 					});
 				}
 			}
+		}
+
+		ImageSource _currentPicture;
+
+		public ImageSource CurrentPicture
+		{
+			set { Set(ref _currentPicture, value); }
+			get { return _currentPicture; }
+		}
+
+		private TimeSpan _updateInterval;
+		public TimeSpan UpdateInterval
+		{
+			get { return _updateInterval; }
 		}
 
 		[IgnoreDataMember]
