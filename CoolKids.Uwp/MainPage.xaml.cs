@@ -26,72 +26,72 @@ namespace CoolKids.Uwp
 	/// </summary>
 	public sealed partial class MainPage : Page
 	{
-		Camera.Models.Camera Cam0 { get; set; }
 		Camera.Models.Camera Cam1 { get; set; }
-		Camera.Models.Camera Cam2 { get; set; }
-		Camera.Models.Camera Cam3 { get; set; }
-		Camera.Models.Camera Cam4 { get; set; }
-		Camera.Models.Camera Cam5 { get; set; }
+		bool Cam1IsRunning = false;
+		int CurrentTemp { get; set; }
+		int DefaultTemp = 75;
+
+		System.Threading.Timer UpdateTimer;
 
 		public MainPage()
 		{
 			this.InitializeComponent();
-			Loaded += MainPage_Loaded;
+			Cam1 = Camera.Models.Camera.Create();
+
+			CurrentTemp = DefaultTemp;
+			SetupAutomation();
 		}
 
-		private async void MainPage_Loaded(object sender, RoutedEventArgs e)
+		private async void SetupAutomation()
 		{
-			Cam0 = Camera.Models.Camera.Create();
-			Cam1 = Camera.Models.Camera.Create();
-			Cam2 = Camera.Models.Camera.Create();
-			Cam3 = Camera.Models.Camera.Create();
-			Cam4 = Camera.Models.Camera.Create();
-			Cam5 = Camera.Models.Camera.Create();
+			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+			{
+				M2xResult.Text = string.Empty;
+				Cam1Result.Text = "Started";
+			});
+
+			if (!Cam1IsRunning)
+			{
+				UpdateTimer = new System.Threading.Timer(UpdateTimerCallback, null, 0, 3000);
+				Cam1IsRunning = true;
+			}
+		}
+
+		private async void UpdateTimerCallback(object state)
+		{
 			await GetImage();
 		}
 
 		private async Task GetImage()
 		{
-			foreach (var pair in new Dictionary<string, Tuple<Camera.Models.Camera, Image, TextBox>> {
-				{ "200", Tuple.Create(Cam0, Cam0Image, Cam0Result) },
-				{ "201", Tuple.Create(Cam1, Cam1Image, Cam1Result) },
-				{ "202", Tuple.Create(Cam2, Cam2Image, Cam2Result) },
-				{ "203", Tuple.Create(Cam3, Cam3Image, Cam3Result) },
-				{ "204", Tuple.Create(Cam4, Cam4Image, Cam4Result) },
-				{ "205", Tuple.Create(Cam5, Cam5Image, Cam5Result) },
-			})
+			Cam1.Url = $"192.168.1.201";
+			Cam1.Port = 80;
+			Cam1.UserName = "coolkids";
+			Cam1.Password = "tampa";
+			await Cam1.DownloadImage();
+
+			if (Cam1.CurrentBytes != null)
 			{
-				pair.Value.Item1.Url = $"192.168.1.{pair.Key}";
-				pair.Value.Item1.Port = 80;
-				pair.Value.Item1.UserName = "coolkids";
-				pair.Value.Item1.Password = "tampa";
-				await pair.Value.Item1.DownloadImage();
-
-				var check = pair.Value.Item1.CurrentPicture;
-				if (check != null)
+				// cog services request
+				await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
 				{
-					pair.Value.Item2.Source = check;
-
-					// cog services request
-					await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
-					{
-						pair.Value.Item3.Text = await FaceApi.Detect(Cam1.CurrentBytes);
-					});
-				}
+					Cam1Result.Text = $"{DateTime.Now.Ticks} - {await FaceApi.Detect(Cam1.CurrentBytes)}";
+				});
 			}
+
+			//if (Cam1.CurrentPicture != null)
+			//{
+			//	Cam1Image.Source = Cam1.CurrentPicture;
+			//}
 		}
 
 		private async void RefreshButton_Tapped(object sender, TappedRoutedEventArgs e)
 		{
+			SetupAutomation();
 			await GetImage();
 		}
 
-		private void Cam1Result_Tapped(object sender, TappedRoutedEventArgs e)
-		{
-
-		}
-
-		private async void SetDoorStatus(object sender, TappedRoutedEventArgs e)
+		private async void SetInteriorTemperature(object sender, TappedRoutedEventArgs e)
 		{
 			var m2x = new M2xApi();
 			var result = "no change";
@@ -99,48 +99,48 @@ namespace CoolKids.Uwp
 			var b = (Button)sender;
 			switch ((string)b.Tag)
 			{
-				case "DoorDriverAjar":
-					result = await m2x.PostValue(M2xApi.CarDoorType.DriverRear, M2xApi.CarDoorValue.Ajar);
+				case "Increment05":
+					CurrentTemp += 5;
+					result = await m2x.PostValue(M2xApi.TemperatureType.Interior, CurrentTemp);
 					break;
-				case "DoorDriverClosed":
-					result = await m2x.PostValue(M2xApi.CarDoorType.DriverRear, M2xApi.CarDoorValue.Closed);
+				case "Increment10":
+					CurrentTemp += 10;
+					result = await m2x.PostValue(M2xApi.TemperatureType.Interior, CurrentTemp);
 					break;
-				case "DoorDriverOpen":
-					result = await m2x.PostValue(M2xApi.CarDoorType.DriverRear, M2xApi.CarDoorValue.Open);
+				case "Reset":
+					CurrentTemp = DefaultTemp;
+					result = await m2x.PostValue(M2xApi.TemperatureType.Interior, CurrentTemp);
+					SetupAutomation();
 					break;
-				case "DoorPassengerAjar":
-					result = await m2x.PostValue(M2xApi.CarDoorType.PassengerRear, M2xApi.CarDoorValue.Ajar);
-					break;
-				case "DoorPassengerClosed":
-					result = await m2x.PostValue(M2xApi.CarDoorType.PassengerRear, M2xApi.CarDoorValue.Closed);
-					break;
-				case "DoorPassengerOpen":
-					result = await m2x.PostValue(M2xApi.CarDoorType.PassengerRear, M2xApi.CarDoorValue.Open);
+				case "Stop":
+					KillAutomation(sender, null);
 					break;
 			}
+
+			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+			{
+				M2xResult.Text = $"{DateTime.Now.Ticks} - {result}";
+			});
 		}
 
-		private async void SetWindowStatus(object sender, TappedRoutedEventArgs e)
+		private async void KillAutomation(object sender, TappedRoutedEventArgs e)
+		{
+			Cam1IsRunning = false;
+			UpdateTimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+			{
+				Cam1Result.Text = "Killed";
+			});
+		}
+
+		private async void GetcarLocation(object sender, TappedRoutedEventArgs e)
 		{
 			var m2x = new M2xApi();
-			var result = "no change";
-
-			var b = (Button)sender;
-			switch ((string)b.Tag)
+			var result = await m2x.GetCarLocation();
+			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
 			{
-				case "WindowDriverRearClosed":
-					result = await m2x.PostValue(M2xApi.CarWindowType.DriverRear, 0);
-					break;
-				case "WindowDriverRearOpen":
-					result = await m2x.PostValue(M2xApi.CarWindowType.DriverRear, 100);
-					break;
-				case "WindowPassengerRearClosed":
-					result = await m2x.PostValue(M2xApi.CarWindowType.PassengerRear, 0);
-					break;
-				case "WindowPassengerRearOpen":
-					result = await m2x.PostValue(M2xApi.CarWindowType.PassengerRear, 100);
-					break;
-			}
+				M2xResult.Text = $"{DateTime.Now.Ticks} - {result}";
+			});
 		}
 	}
 }

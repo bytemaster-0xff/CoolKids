@@ -5,72 +5,34 @@
     xmlns:local="using:CoolKids.Uwp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-	Width="1280">
+    mc:Ignorable="d">
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
+			<RowDefinition Height=".25*"/>
 			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="*"/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
 		</Grid.ColumnDefinitions>
 
-		<TextBlock Grid.Row="0" Grid.Column="0" Text="x.200 - Front" HorizontalAlignment="Center" VerticalAlignment="Center" />
-		<Image Grid.Row="1" Grid.Column="0" Name="Cam0Image" Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" />
+		<TextBlock Grid.Row="0" Grid.Column="0" Text="x.201 - Front" HorizontalAlignment="Center" VerticalAlignment="Top" Width="Auto" Height="Auto" TextWrapping="WrapWholeWords" />
+		<!--<Image Grid.Row="1" Grid.Column="0" Name="Cam1Image" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2" />-->
+		<StackPanel Grid.Row="1" Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center">
+			<TextBox Name="M2xResult" HorizontalAlignment="center" VerticalAlignment="Stretch" Margin="2" />
+			<Button Content="Get Location" Tapped="GetcarLocation" HorizontalAlignment="Center" Margin="0,10,0,0" />
+		</StackPanel>
 		<StackPanel Grid.Row="2" Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center">
-			<TextBox Name="Cam0Result" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2" Tapped="Cam1Result_Tapped"></TextBox>
-			<Button Content="Close Driver Rear Door" Tag="DoorDriverClosed" Tapped="SetDoorStatus" />
+			<TextBox Name="Cam1Result" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2" />
+			<Button Content="Increase Interior Temp (05)" Tag="Increment05" Tapped="SetInteriorTemperature" HorizontalAlignment="Center" Margin="0,10,0,0" />
+			<Button Content="Increase Interior Temp (10)" Tag="Increment10" Tapped="SetInteriorTemperature" HorizontalAlignment="Center" Margin="0,10,0,0" />
+			<Button Content="Reset Interior Temp (N)" Tag="Reset" Tapped="SetInteriorTemperature" HorizontalAlignment="Center" Margin="0,10,0,0" />
+			<Button Content="Stop Timer" Tag="Stop" Tapped="KillAutomation" HorizontalAlignment="Center" Margin="0,10,0,0" />
 		</StackPanel>
 
-		<TextBlock Grid.Row="0" Grid.Column="1" Text="x.201 - Driver" HorizontalAlignment="Center" VerticalAlignment="Center" />
-		<Image Grid.Row="1" Grid.Column="1" Name="Cam1Image" Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" />
-		<StackPanel Grid.Row="2" Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Center">
-			<TextBox Name="Cam1Result" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2" Tapped="Cam1Result_Tapped"></TextBox>
-			<Button Content="Crack Driver Rear Door" Tag="DoorDriverAjar" Tapped="SetDoorStatus" />
-			<Button Content="Open Driver Window Rear" Tag="WindowDriverRearOpen" Tapped="SetWindowStatus" />
-		</StackPanel>
-
-		<TextBlock Grid.Row="0" Grid.Column="2" Text="x.202 - Passenger" HorizontalAlignment="Center" VerticalAlignment="Center" />
-		<Image Grid.Row="1" Grid.Column="2" Name="Cam2Image" Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" />
-		<StackPanel Grid.Row="2" Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center">
-			<TextBox Name="Cam2Result" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2" Tapped="Cam1Result_Tapped"></TextBox>
-			<Button Content="Open Driver Rear Door" Tag="DoorDriverOpen" Tapped="SetDoorStatus" />
-			<Button Content="Close Driver Window Rear" Tag="WindowDriverRearClosed" Tapped="SetWindowStatus" />
-		</StackPanel>
-
-		<TextBlock Grid.Row="0" Grid.Column="3" Text="x.203 - Driver Blind" HorizontalAlignment="Center" VerticalAlignment="Center" />
-		<Image Grid.Row="1" Grid.Column="3" Name="Cam3Image" Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" />
-		<StackPanel Grid.Row="2" Grid.Column="3" Orientation="Vertical" HorizontalAlignment="Center">
-			<TextBox Name="Cam3Result" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2" Tapped="Cam1Result_Tapped"></TextBox>
-			<Button Content="Close Passenger Rear Door" Tag="DoorPassengerClosed" Tapped="SetDoorStatus" />
-			<Button Content="Open Passenger Window Rear" Tag="WindowPassengerRearOpen" Tapped="SetWindowStatus" />
-		</StackPanel>
-
-		<TextBlock Grid.Row="0" Grid.Column="4" Text="x.204 - Passenger Blind" HorizontalAlignment="Center" VerticalAlignment="Center" />
-		<Image Grid.Row="1" Grid.Column="4" Name="Cam4Image" Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" />
-		<StackPanel Grid.Row="2" Grid.Column="4" Orientation="Vertical" HorizontalAlignment="Center">
-			<TextBox Name="Cam4Result" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2" Tapped="Cam1Result_Tapped"></TextBox>
-			<Button Content="Crack Passenger Rear Door" Tag="DoorPassengerAjar" Tapped="SetDoorStatus" />
-			<Button Content="Close Passenger Window Rear" Tag="WindowPassengerRearClosed" Tapped="SetWindowStatus" />
-		</StackPanel>
-
-		<TextBlock Grid.Row="0" Grid.Column="5" Text="x.205 - LG" HorizontalAlignment="Center" VerticalAlignment="Center" />
-		<Image Grid.Row="1" Grid.Column="5" Name="Cam5Image" Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="2" />
-		<StackPanel Grid.Row="2" Grid.Column="5" Orientation="Vertical" HorizontalAlignment="Center">
-			<TextBox Name="Cam5Result" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2" Tapped="Cam1Result_Tapped"></TextBox>
-			<Button Content="Open Passenger Rear Door" Tag="DoorPassengerOpen" Tapped="SetDoorStatus" />
-		</StackPanel>
-
-		<Button Name="RefreshButton" Grid.Row="3" Grid.ColumnSpan="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10" Content="Refresh" Tapped="RefreshButton_Tapped"/>
+		<Button Name="RefreshButton" Grid.Row="3" Grid.ColumnSpan="6" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,20" Content="Refresh" Tapped="RefreshButton_Tapped"/>
 	</Grid>
 </Page>

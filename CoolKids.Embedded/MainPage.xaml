@@ -20,12 +20,6 @@
                    Foreground="White"
                    Text="No motion"></TextBlock>
 
-            <Button Content="FlipRelay" 
-                    Margin="20"
-                 VerticalAlignment="Center" HorizontalAlignment="Center" 
-                    Foreground="Green"
-                    FontSize="40"
-                    Click="Button_Click"></Button>
             <TextBlock Foreground="White">Digital Life</TextBlock>
             
             <StackPanel Orientation="Horizontal" Margin="5">

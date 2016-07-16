@@ -21,5 +21,19 @@
     <ClInclude Include="__vm\.CoolKids.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="dht11.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PololuLedStrip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="DHT11.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PololuLedStrip.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
