@@ -8,6 +8,16 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-		<Image Name="Cam1Image" Width="200"  Margin="-90,0,0,0" />
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		
+		<Image Grid.Row="0" Name="Cam1Image" Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10" />
+
+		<TextBox Grid.Row="1" Name="Cam1Result" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10" Tapped="Cam1Result_Tapped"></TextBox>
+
+		<Button Name="RefreshButton" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10" Content="Refresh" Tapped="RefreshButton_Tapped"/>
 	</Grid>
 </Page>

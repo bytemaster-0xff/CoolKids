@@ -25,6 +25,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Media;
 using System.Runtime.CompilerServices;
+using Windows.Graphics.Imaging;
 
 namespace CoolKids.Camera.Models
 {
@@ -1313,6 +1314,7 @@ namespace CoolKids.Camera.Models
 			{
 				stream.CopyTo(ms);
 				var buffer = ms.ToArray();
+				CurrentBytes = buffer;
 
 				var writeStream = randomAccessStream.AsStreamForWrite();
 				await writeStream.WriteAsync(buffer, 0, buffer.Count());
@@ -1388,6 +1390,13 @@ namespace CoolKids.Camera.Models
 		{
 			set { Set(ref _currentPicture, value); }
 			get { return _currentPicture; }
+		}
+
+		byte[] _currentBytes;
+		public byte[] CurrentBytes
+		{
+			set { Set(ref _currentBytes, value); }
+			get { return _currentBytes; }
 		}
 
 		private TimeSpan _updateInterval;

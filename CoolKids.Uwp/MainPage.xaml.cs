@@ -13,6 +13,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using CoolKids.Camera;
+using CoolKids.Services.MicrosoftCognitiveServices;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -33,6 +35,11 @@ namespace CoolKids.Uwp
 
 		private async void MainPage_Loaded(object sender, RoutedEventArgs e)
 		{
+			await GetImage();
+		}
+
+		private async Task GetImage()
+		{
 			Cam1 = Camera.Models.Camera.Create();
 			Cam1.Url = "192.168.1.201";
 			Cam1.Port = 80;
@@ -40,7 +47,27 @@ namespace CoolKids.Uwp
 			Cam1.Password = "tampa";
 			await Cam1.DownloadImage();
 
-			Cam1Image.Source = Cam1.CurrentPicture;
+			var check = Cam1.CurrentPicture;
+			if (check != null)
+			{
+				Cam1Image.Source = check;
+
+				// cog services request
+				await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
+				{
+					Cam1Result.Text = await FaceApi.Detect(Cam1.CurrentBytes);
+				});
+			}
+		}
+
+		private async void RefreshButton_Tapped(object sender, TappedRoutedEventArgs e)
+		{
+			await GetImage();
+		}
+
+		private void Cam1Result_Tapped(object sender, TappedRoutedEventArgs e)
+		{
+
 		}
 	}
 }
