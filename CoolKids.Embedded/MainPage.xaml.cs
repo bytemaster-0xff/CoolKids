@@ -1,6 +1,7 @@
 ﻿using CoolKids.Uwp.Embedded.GPIO;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -27,11 +28,11 @@ namespace CoolKids.Embedded
     {
         private Motion motionDetector;
 
-        private Relay relay1;
+        private ArduinoDevice _device;
 
-        private RelayController relayController1;
-
-        private DispatcherTimer timer;
+        CoolKids.Uwp.Embedded.Services.Main _main;
+              
+        private DispatcherTimer _timer;
 
         public MainPage()
         {
@@ -42,36 +43,43 @@ namespace CoolKids.Embedded
             motionDetector.Changed += MotionDetector_Changed;
 
             motionDetector.Start();
-            
-            relay1 = new Relay();
-            relay1.InitGPIO();
 
+            _main = new Uwp.Embedded.Services.Main();
+            
+         
             Loaded += MainPage_Loaded;
         }
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
-            relayController1 = new RelayController();
-            await relayController1.Init("I2C1", 0x30);
+            _device = new ArduinoDevice();
+            await _device.Init(0x60, "I2C0");
 
+            _main.Port = 9001;
+            _main.MessageReceived += _main_MessageReceived;
+            _main.StartServer();
 
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(2000);
-            timer.Tick += Timer_Tick;
-            timer.Start();
+           /* _timer = new DispatcherTimer();
+            _timer.Interval = TimeSpan.FromSeconds(0.5);
+            _timer.Tick += _timer_Tick;
+            _timer.Start();*/
 
         }
 
-        private void Timer_Tick(object sender, object e)
-        { 
-        
-         //   relay1.IsRelayOn = !relay1.IsRelayOn;
-
-       
-
-            relayController1.IsRelayOn = !relayController1.IsRelayOn;
+        private void _timer_Tick(object sender, object e)
+        {
+            var temp = _device.ReadTemperature();
+            Debug.WriteLine("TEMP: " + temp);
         }
 
+        private void _main_MessageReceived(object sender, string e)
+        {
+            Debug.WriteLine("MESSAGE RECEIVED Forward -->     " + e);
+
+            _device.Send(e);
+        }
+
+ 
         private void MotionDetector_Changed(bool MotionDetected)
         {
             if (MotionDetected)
@@ -87,10 +95,6 @@ namespace CoolKids.Embedded
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            relay1.IsRelayOn = !relay1.IsRelayOn;
-
-
-            relayController1.IsRelayOn = !relayController1.IsRelayOn;
-        }
+         }
     }
 }

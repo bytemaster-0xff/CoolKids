@@ -1,0 +1,7 @@
+﻿Compiling 'CoolKids' for 'Arduino Pro or Pro Mini w/ ATmega328 (3.3V, 8 MHz)'
+CoolKids.ino:In function 'void loop()
+CoolKids.ino:372:6: error: redefinition of 'void loop()
+:void loop()
+CoolKids.ino:233:6: error: 'void loop()' previously defined here
+:void loop()
+Error compiling project sources
