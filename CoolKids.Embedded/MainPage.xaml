@@ -20,12 +20,29 @@
                    Foreground="White"
                    Text="No motion"></TextBlock>
 
-            <Button Content="FlipRelay" 
+            <TextBlock Foreground="White">Digital Life</TextBlock>
+            
+            <StackPanel Orientation="Horizontal" Margin="5">
+
+                <TextBlock Foreground="White" Margin="20">UN</TextBlock>
+                <TextBox Width="150" x:Name="UN" Text="553474421" VerticalAlignment="Center" Foreground="White"/>
+            </StackPanel>
+
+
+            <Button Content="Leave Home" 
                     Margin="20"
                  VerticalAlignment="Center" HorizontalAlignment="Center" 
-                    Foreground="Green"
+                    Foreground="White"
                     FontSize="40"
-                    Click="Button_Click"></Button>
+                    Click="btn_LeaveHome"></Button>
+            
+            <Button Content="Arrive at home" 
+                    Margin="20"
+                 VerticalAlignment="Center" HorizontalAlignment="Center" 
+                    Foreground="White"
+                    FontSize="40"
+                    Click="btn_ArriveAtHome"></Button>
+
 
         </StackPanel>
         
