@@ -26,6 +26,44 @@
                     Foreground="Green"
                     FontSize="40"
                     Click="Button_Click"></Button>
+            <TextBlock Foreground="White">Digital Life</TextBlock>
+            
+            <StackPanel Orientation="Horizontal" Margin="5">
+
+                <TextBlock Foreground="White" Margin="20">UN</TextBlock>
+                <TextBox Width="150" x:Name="UN" Text="553474421" VerticalAlignment="Center" Foreground="White"/>
+            </StackPanel>
+
+
+            <Button Content="Disable Alarm" 
+                    Margin="20"
+                 VerticalAlignment="Center" HorizontalAlignment="Center" 
+                    Foreground="White"
+                    FontSize="40"
+                    Click="btn_Alarm_disable"></Button>
+            
+            <Button Content="Enable Alarm" 
+                    Margin="20"
+                 VerticalAlignment="Center" HorizontalAlignment="Center" 
+                    Foreground="White"
+                    FontSize="40"
+                    Click="btn_Alarm_enable"></Button>
+
+            <Button Content="Lock Door" 
+                    Margin="20"
+                 VerticalAlignment="Center" HorizontalAlignment="Center" 
+                    Foreground="White"
+                    FontSize="40"
+                    Click="btn_Lock_enable"></Button>
+
+
+            <Button Content="Unlock Door" 
+                    Margin="20"
+                 VerticalAlignment="Center" HorizontalAlignment="Center" 
+                    Foreground="White"
+                    FontSize="40"
+                    Click="btn_Lock_disable"></Button>
+
 
         </StackPanel>
         

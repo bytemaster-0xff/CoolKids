@@ -98,6 +98,7 @@
     <Compile Include="GPIO\Relay.cs" />
     <Compile Include="GPIO\Motion.cs" />
     <Compile Include="GPIO\RelayController.cs" />
+    <Compile Include="CoolKidsHTTPServer.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -110,6 +111,7 @@
     <None Include="CoolKids.Embedded_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\index.html" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -141,6 +143,10 @@
     <ProjectReference Include="..\CoolKids.Common\CoolKids.Common.csproj">
       <Project>{b247f87e-2346-4d56-874c-773f076e0f8d}</Project>
       <Name>CoolKids.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CoolKids.HomeAutomation\CoolKids.HomeAutomation.csproj">
+      <Project>{9737F8FD-88DA-4458-9237-841F622AECE1}</Project>
+      <Name>CoolKids.HomeAutomation</Name>
     </ProjectReference>
     <ProjectReference Include="..\CoolKids.Services\CoolKids.Services.csproj">
       <Project>{0ba6e651-95dd-4f03-b25f-745cf882cdf0}</Project>

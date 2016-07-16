@@ -1,4 +1,6 @@
-﻿using CoolKids.Uwp.Embedded.GPIO;
+﻿using CoolKids.HomeAutomation;
+using CoolKids.Uwp.Embedded;
+using CoolKids.Uwp.Embedded.GPIO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -33,6 +35,8 @@ namespace CoolKids.Embedded
 
         private DispatcherTimer timer;
 
+        private CoolKidsHTTPServer webserver;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -47,6 +51,11 @@ namespace CoolKids.Embedded
             relay1.InitGPIO();
 
             Loaded += MainPage_Loaded;
+
+            webserver = new CoolKidsHTTPServer();
+            webserver.StartServer();
+
+
         }
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -82,7 +91,7 @@ namespace CoolKids.Embedded
             {
                 tbMessage.Text = "Motion not detected";
             }
-            //throw new NotImplementedException();
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -92,5 +101,38 @@ namespace CoolKids.Embedded
 
             relayController1.IsRelayOn = !relayController1.IsRelayOn;
         }
+
+
+
+
+        private async void btn_Alarm_disable(object sender, RoutedEventArgs e)
+        {
+            DLHelper dl = new DLHelper(UN.Text, "NO-PASSWD", "EE_B4BEFBF683DB0144_1");
+
+            await dl.ATT_Alarm(true);
+        }
+
+        private async void btn_Alarm_enable(object sender, RoutedEventArgs e)
+        {
+            DLHelper dl = new DLHelper(UN.Text, "NO-PASSWD", "EE_B4BEFBF683DB0144_1");
+
+            await dl.ATT_Alarm(false);
+        }
+
+
+        private async void btn_Lock_enable(object sender, RoutedEventArgs e)
+        {
+            DLHelper dl = new DLHelper(UN.Text, "NO-PASSWD", "EE_B4BEFBF683DB0144_1");
+
+            await dl.LockOpenClose(false);
+        }
+
+        private async void btn_Lock_disable(object sender, RoutedEventArgs e)
+        {
+            DLHelper dl = new DLHelper(UN.Text, "NO-PASSWD", "EE_B4BEFBF683DB0144_1");
+
+            await dl.LockOpenClose(true);
+        }
+
     }
 }
