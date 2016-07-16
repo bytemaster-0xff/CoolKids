@@ -46,18 +46,28 @@ namespace CoolKids.Embedded
             relay1 = new Relay();
             relay1.InitGPIO();
 
+            Loaded += MainPage_Loaded;
+        }
+
+        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
             relayController1 = new RelayController();
-            Task t = relayController1.Init("I2C0", 0x30);
+            await relayController1.Init("I2C1", 0x30);
+
 
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromMilliseconds(2000);
             timer.Tick += Timer_Tick;
             timer.Start();
+
         }
 
         private void Timer_Tick(object sender, object e)
-        {
-            relay1.IsRelayOn = !relay1.IsRelayOn;
+        { 
+        
+         //   relay1.IsRelayOn = !relay1.IsRelayOn;
+
+       
 
             relayController1.IsRelayOn = !relayController1.IsRelayOn;
         }
