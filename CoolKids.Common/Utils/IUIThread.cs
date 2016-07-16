@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CoolKids.Services
+namespace CoolKids.Common.Utils
 {
-    public class Class1
+    public interface IUIThread
     {
+        void Invoke(Action action);
     }
 }

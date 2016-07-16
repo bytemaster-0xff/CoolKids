@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{31680b21-5eb3-4f8b-81d7-1b0649c8ceb4}</ProjectGuid>
+    <ProjectGuid>{31680B21-5EB3-4F8B-81D7-1B0649C8CEB4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CoolKids.Camera</RootNamespace>
@@ -107,9 +107,40 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="BackgroundService\TimedUpdate.cs" />
+    <Compile Include="CameraDataServices.cs" />
+    <Compile Include="CameraTypes.cs" />
+    <Compile Include="IPCameraCommand.cs" />
+    <Compile Include="IPCameraStrings.cs" />
+    <Compile Include="CoolKidsCameraCommon.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CoolKidsCameraCommon.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Camera.cs" />
+    <Compile Include="Models\CameraAPIConfig.cs" />
+    <Compile Include="Models\CameraAPIConfigs.cs" />
+    <Compile Include="Models\CameraSettings.cs" />
+    <Compile Include="Models\ICameraStream.cs" />
+    <Compile Include="Models\ICameraStreamEventArgs.cs" />
+    <Compile Include="Models\PresetLocation.cs" />
+    <Compile Include="Products.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CameraService.cs" />
+    <Compile Include="ViewModels\AddCameraViewModel.cs" />
+    <Compile Include="ViewModels\CameraViewModel.cs" />
+    <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <EmbeddedResource Include="CoolKidsCameraCommon.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>CoolKidsCameraCommon.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\CoolKids.Camera.rd.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CoolKids.Common\CoolKids.Common.csproj">
+      <Project>{b247f87e-2346-4d56-874c-773f076e0f8d}</Project>
+      <Name>CoolKids.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

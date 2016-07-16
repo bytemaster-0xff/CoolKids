@@ -7,7 +7,28 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+
+    <!--<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">-->
+    <Grid Background="#555555">
+        <StackPanel Orientation="Vertical" 
+                 VerticalAlignment="Center" HorizontalAlignment="Center" >
+            <TextBlock 
+             x:Name="tbMessage"
+             VerticalAlignment="Center" HorizontalAlignment="Center" 
+                   FontSize="40"
+                   Foreground="White"
+                   Text="No motion"></TextBlock>
+
+            <Button Content="FlipRelay" 
+                    Margin="20"
+                 VerticalAlignment="Center" HorizontalAlignment="Center" 
+                    Foreground="Green"
+                    FontSize="40"
+                    Click="Button_Click"></Button>
+
+        </StackPanel>
+        
 
     </Grid>
 </Page>
