@@ -37,6 +37,9 @@ namespace CoolKids.Embedded
 
         private CoolKidsHTTPServer webserver;
 
+        private string appId = "EE_B4BEFBF683DB0144_1";
+        private string password = "NO-PASSWD";
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -68,6 +71,8 @@ namespace CoolKids.Embedded
             timer.Interval = TimeSpan.FromMilliseconds(2000);
             timer.Tick += Timer_Tick;
             timer.Start();
+
+            UN.Text = "553474447";  //Igloo8
 
         }
 
@@ -105,34 +110,33 @@ namespace CoolKids.Embedded
 
 
 
-        private async void btn_Alarm_disable(object sender, RoutedEventArgs e)
+        private async void btn_LeaveHome(object sender, RoutedEventArgs e)
         {
-            DLHelper dl = new DLHelper(UN.Text, "NO-PASSWD", "EE_B4BEFBF683DB0144_1");
+            DLHelper dl = new DLHelper(UN.Text, password, appId);
 
-            await dl.ATT_Alarm(true);
+            await dl.LoadDevices();
+
+            Task t1 = dl.ATT_Alarm(false);
+            Task t2 = dl.LockOpenClose(false);
+            Task t3 = dl.TurnOnLights(false);
+
+            await Task.WhenAll(t1, t2, t3);
+
         }
 
-        private async void btn_Alarm_enable(object sender, RoutedEventArgs e)
+        private async void btn_ArriveAtHome(object sender, RoutedEventArgs e)
         {
-            DLHelper dl = new DLHelper(UN.Text, "NO-PASSWD", "EE_B4BEFBF683DB0144_1");
+            DLHelper dl = new DLHelper(UN.Text, password, appId);
 
-            await dl.ATT_Alarm(false);
+            await dl.LoadDevices();
+
+            Task t1 = dl.ATT_Alarm(true);
+            Task t2 = dl.LockOpenClose(true);
+            Task t3 = dl.TurnOnLights(true);
+
+            await Task.WhenAll(t1, t2, t3);
         }
 
-
-        private async void btn_Lock_enable(object sender, RoutedEventArgs e)
-        {
-            DLHelper dl = new DLHelper(UN.Text, "NO-PASSWD", "EE_B4BEFBF683DB0144_1");
-
-            await dl.LockOpenClose(false);
-        }
-
-        private async void btn_Lock_disable(object sender, RoutedEventArgs e)
-        {
-            DLHelper dl = new DLHelper(UN.Text, "NO-PASSWD", "EE_B4BEFBF683DB0144_1");
-
-            await dl.LockOpenClose(true);
-        }
 
     }
 }

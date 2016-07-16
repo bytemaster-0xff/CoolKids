@@ -35,34 +35,19 @@
             </StackPanel>
 
 
-            <Button Content="Disable Alarm" 
+            <Button Content="Leave Home" 
                     Margin="20"
                  VerticalAlignment="Center" HorizontalAlignment="Center" 
                     Foreground="White"
                     FontSize="40"
-                    Click="btn_Alarm_disable"></Button>
+                    Click="btn_LeaveHome"></Button>
             
-            <Button Content="Enable Alarm" 
+            <Button Content="Arrive at home" 
                     Margin="20"
                  VerticalAlignment="Center" HorizontalAlignment="Center" 
                     Foreground="White"
                     FontSize="40"
-                    Click="btn_Alarm_enable"></Button>
-
-            <Button Content="Lock Door" 
-                    Margin="20"
-                 VerticalAlignment="Center" HorizontalAlignment="Center" 
-                    Foreground="White"
-                    FontSize="40"
-                    Click="btn_Lock_enable"></Button>
-
-
-            <Button Content="Unlock Door" 
-                    Margin="20"
-                 VerticalAlignment="Center" HorizontalAlignment="Center" 
-                    Foreground="White"
-                    FontSize="40"
-                    Click="btn_Lock_disable"></Button>
+                    Click="btn_ArriveAtHome"></Button>
 
 
         </StackPanel>
