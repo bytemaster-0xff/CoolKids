@@ -107,6 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MicrosoftCognitiveServices\ComputerVisionApi.cs" />
     <Compile Include="MicrosoftCognitiveServices\FaceApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\CoolKids.Services.rd.xml" />

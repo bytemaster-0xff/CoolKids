@@ -20,43 +20,63 @@ using System.Threading.Tasks;
 
 namespace CoolKids.Uwp
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class MainPage : Page
-    {
+	/// <summary>
+	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// </summary>
+	public sealed partial class MainPage : Page
+	{
+		Camera.Models.Camera Cam0 { get; set; }
 		Camera.Models.Camera Cam1 { get; set; }
+		Camera.Models.Camera Cam2 { get; set; }
+		Camera.Models.Camera Cam3 { get; set; }
+		Camera.Models.Camera Cam4 { get; set; }
+		Camera.Models.Camera Cam5 { get; set; }
 
-        public MainPage()
-        {
-            this.InitializeComponent();
+		public MainPage()
+		{
+			this.InitializeComponent();
 			Loaded += MainPage_Loaded;
-        }
+		}
 
 		private async void MainPage_Loaded(object sender, RoutedEventArgs e)
 		{
+			Cam0 = Camera.Models.Camera.Create();
+			Cam1 = Camera.Models.Camera.Create();
+			Cam2 = Camera.Models.Camera.Create();
+			Cam3 = Camera.Models.Camera.Create();
+			Cam4 = Camera.Models.Camera.Create();
+			Cam5 = Camera.Models.Camera.Create();
 			await GetImage();
 		}
 
 		private async Task GetImage()
 		{
-			Cam1 = Camera.Models.Camera.Create();
-			Cam1.Url = "192.168.1.201";
-			Cam1.Port = 80;
-			Cam1.UserName = "coolkids";
-			Cam1.Password = "tampa";
-			await Cam1.DownloadImage();
-
-			var check = Cam1.CurrentPicture;
-			if (check != null)
+			foreach (var pair in new Dictionary<string, Tuple<Camera.Models.Camera, Image, TextBox>> {
+				{ "200", Tuple.Create(Cam0, Cam0Image, Cam0Result) },
+				{ "201", Tuple.Create(Cam1, Cam1Image, Cam1Result) },
+				{ "202", Tuple.Create(Cam2, Cam2Image, Cam2Result) },
+				{ "203", Tuple.Create(Cam3, Cam3Image, Cam3Result) },
+				{ "204", Tuple.Create(Cam4, Cam4Image, Cam4Result) },
+				{ "205", Tuple.Create(Cam5, Cam5Image, Cam5Result) },
+			})
 			{
-				Cam1Image.Source = check;
+				pair.Value.Item1.Url = $"192.168.1.{pair.Key}";
+				pair.Value.Item1.Port = 80;
+				pair.Value.Item1.UserName = "coolkids";
+				pair.Value.Item1.Password = "tampa";
+				await pair.Value.Item1.DownloadImage();
 
-				// cog services request
-				await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
+				var check = pair.Value.Item1.CurrentPicture;
+				if (check != null)
 				{
-					Cam1Result.Text = await FaceApi.Detect(Cam1.CurrentBytes);
-				});
+					pair.Value.Item2.Source = check;
+
+					// cog services request
+					await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
+					{
+						pair.Value.Item3.Text = await FaceApi.Detect(Cam1.CurrentBytes);
+					});
+				}
 			}
 		}
 

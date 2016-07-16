@@ -1,32 +1,28 @@
 ﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CoolKids.Services.MicrosoftCognitiveServices
 {
-	public class FaceApi
+	public class ComputerVisionApi
 	{
-		const string ApiKey = "12d56fdef1b249bc87b89512dd23230a";
+		const string ApiKey = "d03b6ec652c84ce89b762586e4f6a85b";
 
-		public static async Task<string> Detect(byte [] byteData)
+		public static async Task<string> Detect(byte[] byteData)
 		{
 			var client = new HttpClient();
 			var queryString = new Dictionary<string, string> {
-				{ "returnFaceId", string.Empty },
-				{ "returnFaceLandmarks", string.Empty },
-				{ "returnFaceAttributes", string.Empty },
+				{ "visualFeatures", string.Empty },
+				//{ "details", string.Empty },
 			};
 
 			// Request headers
 			client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", ApiKey);
 
 			// Request parameters
-			queryString["returnFaceId"] = "true";
-			queryString["returnFaceLandmarks"] = "true";
-			//queryString["returnFaceAttributes"] = "age,gender,headPose,smile,facialHair,glasses";
-			var uri = "https://api.projectoxford.ai/face/v1.0/detect?" + queryString;
+			queryString["visualFeatures"] = "Categories,Tags,Description,Faces";
+			var uri = "https://api.projectoxford.ai/vision/v1.0/analyze?" + queryString;
 
 			HttpResponseMessage response;
 
@@ -37,7 +33,5 @@ namespace CoolKids.Services.MicrosoftCognitiveServices
 				return await response.Content.ReadAsStringAsync();
 			}
 		}
-
-
 	}
 }

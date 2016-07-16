@@ -1302,29 +1302,38 @@ namespace CoolKids.Camera.Models
 
 		public async Task DownloadImage()
 		{
-			var request = System.Net.HttpWebRequest.CreateHttp(string.Format(CompositeStaticImageUrl, DateTime.Now.ToFileTime()));
+			var requestUrl = string.Format(CompositeStaticImageUrl, DateTime.Now.ToFileTime());
 
-			if (!string.IsNullOrEmpty(UserName) || !string.IsNullOrEmpty(Password))
-				request.Credentials = new NetworkCredential(UserName, Password);
-
-			using (var response = await request.GetResponseAsync())
-			using (var stream = response.GetResponseStream())
-			using (var ms = new MemoryStream())
-			using (var randomAccessStream = new InMemoryRandomAccessStream())
+			try
 			{
-				stream.CopyTo(ms);
-				var buffer = ms.ToArray();
-				CurrentBytes = buffer;
+				var request = System.Net.HttpWebRequest.CreateHttp(requestUrl);
 
-				var writeStream = randomAccessStream.AsStreamForWrite();
-				await writeStream.WriteAsync(buffer, 0, buffer.Count());
-				await writeStream.FlushAsync();
+				if (!string.IsNullOrEmpty(UserName) || !string.IsNullOrEmpty(Password))
+					request.Credentials = new NetworkCredential(UserName, Password);
 
-				randomAccessStream.Seek(0);
-				var image = new BitmapImage();
-				await image.SetSourceAsync(randomAccessStream);
+				using (var response = await request.GetResponseAsync())
+				using (var stream = response.GetResponseStream())
+				using (var ms = new MemoryStream())
+				using (var randomAccessStream = new InMemoryRandomAccessStream())
+				{
+					stream.CopyTo(ms);
+					var buffer = ms.ToArray();
+					CurrentBytes = buffer;
 
-				CurrentPicture = image;
+					var writeStream = randomAccessStream.AsStreamForWrite();
+					await writeStream.WriteAsync(buffer, 0, buffer.Count());
+					await writeStream.FlushAsync();
+
+					randomAccessStream.Seek(0);
+					var image = new BitmapImage();
+					await image.SetSourceAsync(randomAccessStream);
+
+					CurrentPicture = image;
+				}
+			}
+			catch (Exception ex)
+			{
+				// do nothing; 
 			}
 		}
 
