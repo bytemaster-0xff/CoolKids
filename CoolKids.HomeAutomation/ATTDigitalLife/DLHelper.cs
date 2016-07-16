@@ -26,7 +26,7 @@ namespace CoolKids.HomeAutomation
         }
 
 
-        private async Task LoadDevices()
+        public async Task LoadDevices()
         {
             if (devices == null)
             {
@@ -82,6 +82,48 @@ namespace CoolKids.HomeAutomation
         }
 
 
+        public async Task<string> TurnOnLights(bool On = true)
+        {
+            await LoadDevices();
+
+            string deviceGuid = "";
+            string deviceGuid_smartplug = "";
+
+            foreach (var item in devices.content)
+            {
+                if (item.deviceType == "light-control")
+                {
+                    deviceGuid = item.deviceGuid;
+                }
+                else if (item.deviceType == "smart-plug")
+                {
+                    deviceGuid_smartplug = item.deviceGuid;
+                }
+            }
+
+            string onoff = "off";
+
+            if (String.IsNullOrWhiteSpace(deviceGuid) == false)
+            {
+
+                DL_DeviceAttribute attribute = await client.getDeviceAttributeValue(deviceGuid, "switch");
+
+                if (On == true)
+                    onoff = "on";
+
+                DL_Status result = await client.updateDeviceAttributeValue(deviceGuid, "switch", onoff);
+            }
+
+
+            if (String.IsNullOrWhiteSpace(deviceGuid_smartplug) == false)
+            {
+                DL_Status result = await client.updateDeviceAttributeValue(deviceGuid_smartplug, "switch", onoff);
+            }
+
+            return onoff;
+        }
+
+
         public async Task<string> LockOpenClose(bool Unlock = true)
         {
             await LoadDevices();
@@ -104,6 +146,32 @@ namespace CoolKids.HomeAutomation
 
             return result.content;
         }
+
+
+
+        public async Task<string> GarageDoorOpenClose(bool Open = true)
+        {
+            await LoadDevices();
+
+            string deviceGuid_garageDoor = "";
+
+            string open = (Open ? "open" : "close");
+
+            foreach (var item in devices.content)
+            {
+                if (item.deviceType == "garage-door-controller" &&
+                    String.IsNullOrWhiteSpace(deviceGuid_garageDoor) == true)
+                {
+                    deviceGuid_garageDoor = item.deviceGuid;
+                    break;
+                }
+            }
+
+            DL_Status result = await client.updateDeviceAttributeValue(deviceGuid_garageDoor, "Garage Door Controller", open);
+
+            return result.content;
+        }
+
 
 
         public async Task<string> ATT_Alarm(bool disable = true)

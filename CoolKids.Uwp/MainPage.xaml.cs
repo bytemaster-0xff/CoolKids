@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using CoolKids.Camera;
 using CoolKids.Services.MicrosoftCognitiveServices;
+using CoolKids.Services.Att;
 using System.Threading.Tasks;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -88,6 +89,58 @@ namespace CoolKids.Uwp
 		private void Cam1Result_Tapped(object sender, TappedRoutedEventArgs e)
 		{
 
+		}
+
+		private async void SetDoorStatus(object sender, TappedRoutedEventArgs e)
+		{
+			var m2x = new M2xApi();
+			var result = "no change";
+
+			var b = (Button)sender;
+			switch ((string)b.Tag)
+			{
+				case "DoorDriverAjar":
+					result = await m2x.PostValue(M2xApi.CarDoorType.DriverRear, M2xApi.CarDoorValue.Ajar);
+					break;
+				case "DoorDriverClosed":
+					result = await m2x.PostValue(M2xApi.CarDoorType.DriverRear, M2xApi.CarDoorValue.Closed);
+					break;
+				case "DoorDriverOpen":
+					result = await m2x.PostValue(M2xApi.CarDoorType.DriverRear, M2xApi.CarDoorValue.Open);
+					break;
+				case "DoorPassengerAjar":
+					result = await m2x.PostValue(M2xApi.CarDoorType.PassengerRear, M2xApi.CarDoorValue.Ajar);
+					break;
+				case "DoorPassengerClosed":
+					result = await m2x.PostValue(M2xApi.CarDoorType.PassengerRear, M2xApi.CarDoorValue.Closed);
+					break;
+				case "DoorPassengerOpen":
+					result = await m2x.PostValue(M2xApi.CarDoorType.PassengerRear, M2xApi.CarDoorValue.Open);
+					break;
+			}
+		}
+
+		private async void SetWindowStatus(object sender, TappedRoutedEventArgs e)
+		{
+			var m2x = new M2xApi();
+			var result = "no change";
+
+			var b = (Button)sender;
+			switch ((string)b.Tag)
+			{
+				case "WindowDriverRearClosed":
+					result = await m2x.PostValue(M2xApi.CarWindowType.DriverRear, 0);
+					break;
+				case "WindowDriverRearOpen":
+					result = await m2x.PostValue(M2xApi.CarWindowType.DriverRear, 100);
+					break;
+				case "WindowPassengerRearClosed":
+					result = await m2x.PostValue(M2xApi.CarWindowType.PassengerRear, 0);
+					break;
+				case "WindowPassengerRearOpen":
+					result = await m2x.PostValue(M2xApi.CarWindowType.PassengerRear, 100);
+					break;
+			}
 		}
 	}
 }

@@ -107,6 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Att\M2xApi.cs" />
     <Compile Include="MicrosoftCognitiveServices\ComputerVisionApi.cs" />
     <Compile Include="MicrosoftCognitiveServices\FaceApi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -118,6 +119,12 @@
       <Name>CoolKids.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ATTM2X">
+      <HintPath>..\_lib\ATTM2X.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

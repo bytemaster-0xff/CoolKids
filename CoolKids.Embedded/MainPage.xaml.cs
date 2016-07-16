@@ -1,4 +1,6 @@
-﻿using CoolKids.Uwp.Embedded.GPIO;
+﻿using CoolKids.HomeAutomation;
+using CoolKids.Uwp.Embedded;
+using CoolKids.Uwp.Embedded.GPIO;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -34,6 +36,11 @@ namespace CoolKids.Embedded
               
         private DispatcherTimer _timer;
 
+        private CoolKidsHTTPServer webserver;
+
+        private string appId = "EE_B4BEFBF683DB0144_1";
+        private string password = "NO-PASSWD";
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -48,6 +55,11 @@ namespace CoolKids.Embedded
             
          
             Loaded += MainPage_Loaded;
+
+            webserver = new CoolKidsHTTPServer();
+            webserver.StartServer();
+
+
         }
 
         private async void MainPage_Loaded(object sender, RoutedEventArgs e)
@@ -63,6 +75,8 @@ namespace CoolKids.Embedded
             _timer.Interval = TimeSpan.FromSeconds(0.5);
             _timer.Tick += _timer_Tick;
             _timer.Start();*/
+
+            UN.Text = "553474447";  //Igloo8
 
         }
 
@@ -90,11 +104,35 @@ namespace CoolKids.Embedded
             {
                 tbMessage.Text = "Motion not detected";
             }
-            //throw new NotImplementedException();
+
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+
+        private async void btn_LeaveHome(object sender, RoutedEventArgs e)
         {
-         }
+            DLHelper dl = new DLHelper(UN.Text, password, appId);
+
+            await dl.LoadDevices();
+
+            Task t1 = dl.ATT_Alarm(false);
+            Task t2 = dl.LockOpenClose(false);
+            Task t3 = dl.TurnOnLights(false);
+
+            await Task.WhenAll(t1, t2, t3);
+
+        }
+
+        private async void btn_ArriveAtHome(object sender, RoutedEventArgs e)
+        {
+            DLHelper dl = new DLHelper(UN.Text, password, appId);
+
+            await dl.LoadDevices();
+
+            Task t1 = dl.ATT_Alarm(true);
+            Task t2 = dl.LockOpenClose(true);
+            Task t3 = dl.TurnOnLights(true);
+
+            await Task.WhenAll(t1, t2, t3);
+        }
     }
 }
