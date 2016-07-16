@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.Networking.Sockets;
 using Windows.Storage.Streams;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Net.Http;
 
 namespace CoolKids.Uwp.Embedded
 {
@@ -45,19 +46,33 @@ namespace CoolKids.Uwp.Embedded
                 {
                     using (Stream response = output.AsStreamForWrite())
                     {
-                        string[] lines = File.ReadAllLines("Assets\\index.html");
-                        
-                        string responseContent = "";
-
-                        foreach (var line in lines)
+                        if (request.ToString().Contains("startURL") == true)
                         {
-                            responseContent += line;
-                            responseContent += Environment.NewLine;
+                            HttpClient client = new HttpClient();
+
+                            string cutString = "startURL?url=";
+                            var index = request.ToString().IndexOf(cutString);
+                            var remaining = request.ToString().Substring(index + cutString.Length);
+                            var segments = remaining.Split(' ');
+                            var urlToCall = segments[0];
+
+                            await client.GetAsync(urlToCall);
+
                         }
+                        else
+                        {
+                            string[] lines = File.ReadAllLines("Assets\\index.html");
 
+                            string responseContent = "";
 
+                            foreach (var line in lines)
+                            {
+                                responseContent += line;
+                                responseContent += Environment.NewLine;
+                            }
 
-                        await WriteResponseAsync(output, 200, responseContent);
+                            await WriteResponseAsync(output, 200, responseContent);
+                        }
                     }
                 }
             };
@@ -67,15 +82,16 @@ namespace CoolKids.Uwp.Embedded
 
         private async Task WriteResponseAsync(IOutputStream os, 
                                               int responseCode, 
-                                              String resposneContent)
+                                              String responseContent)
         {
             using (var resp = os.AsStreamForWrite())
             {
-                var bodyArray = Encoding.UTF8.GetBytes(resposneContent);
+                var bodyArray = Encoding.UTF8.GetBytes(responseContent);
                 using (var stream = new MemoryStream(bodyArray))
                 {
                     var header = String.Format("HTTP/1.1 {0} OK\r\n" +
                                       "Content-Length: {1}\r\n" +
+                                      "Content-Type: text/html; charset=UTF-8\r\n" +
                                       "Connection: close\r\n\r\n",
                                       responseCode, stream.Length);
                     var headerArray = Encoding.UTF8.GetBytes(header);
