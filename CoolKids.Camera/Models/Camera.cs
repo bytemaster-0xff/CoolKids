@@ -26,6 +26,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Media;
 using System.Runtime.CompilerServices;
 using Windows.Graphics.Imaging;
+using Windows.UI.Core;
 
 namespace CoolKids.Camera.Models
 {
@@ -1314,21 +1315,29 @@ namespace CoolKids.Camera.Models
 				using (var response = await request.GetResponseAsync())
 				using (var stream = response.GetResponseStream())
 				using (var ms = new MemoryStream())
-				using (var randomAccessStream = new InMemoryRandomAccessStream())
+				//using (var randomAccessStream = new InMemoryRandomAccessStream())
 				{
 					stream.CopyTo(ms);
 					var buffer = ms.ToArray();
 					CurrentBytes = buffer;
 
-					var writeStream = randomAccessStream.AsStreamForWrite();
-					await writeStream.WriteAsync(buffer, 0, buffer.Count());
-					await writeStream.FlushAsync();
+					////var image = new BitmapImage();
+					////await image.SetSourceAsync(randomAccessStream);
+					////CurrentPicture = image;
 
-					randomAccessStream.Seek(0);
-					var image = new BitmapImage();
-					await image.SetSourceAsync(randomAccessStream);
+					//var writeStream = randomAccessStream.AsStreamForWrite();
+					//await writeStream.WriteAsync(buffer, 0, buffer.Count());
+					//await writeStream.FlushAsync();
 
-					CurrentPicture = image;
+					//randomAccessStream.Seek(0);
+
+					////CoreWindow.GetForCurrentThread().Activate();
+					//await CoreWindow.GetForCurrentThread().Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
+					//{
+					//	var image = new BitmapImage();
+					//	await image.SetSourceAsync(randomAccessStream);
+					//	CurrentPicture = image;
+					//});
 				}
 			}
 			catch (Exception ex)

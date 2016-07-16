@@ -36,6 +36,12 @@ namespace CoolKids.Services.Att
 			public const string PassengerRear = "passenger_window_rear_openness";
 		}
 
+		public static class TemperatureType
+		{
+			public const string Exterior = "temperature_exterior";
+			public const string Interior = "temperature_interior";
+		}
+
 		/// <summary>
 		/// Posts value expressing the state of the specified door.
 		/// </summary>
@@ -57,18 +63,28 @@ namespace CoolKids.Services.Att
 		/// <summary>
 		/// Posts value expressing the openness of the specified window.
 		/// </summary>
-		/// <param name="carWindowType">A selection from CarWindowType.</param>
-		/// <param name="carWindowValue">An integer percentage value equal to or between from 0 and 100.</param>
+		/// <param name="carIntegerType">A selection from a type that uses integer values, such as TemperatureType.</param>
+		/// <param name="carIntegerValue">An integer percentage value equal to or between from 0 and +N.</param>
 		/// <returns></returns>
-		public async Task<string> PostValue(string carWindowType, int carWindowValue)
+		public async Task<string> PostValue(string carIntegerType, int carIntegerValue)
 		{
 			using (var client = new M2XClient(ApiKey))
 			{
 				var device = client.Device(DeviceId);
-				var stream = device.Stream(carWindowType);
-				var valueParams = $"{{ \"timestamp\": \"{DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ")}\", \"value\": {carWindowValue} }}";
+				var stream = device.Stream(carIntegerType);
+				var valueParams = $"{{ \"timestamp\": \"{DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ")}\", \"value\": {carIntegerValue} }}";
 				var postResult = await stream.UpdateValue(valueParams);
 				return postResult.Raw;
+			}
+		}
+
+		public async Task<string> GetCarLocation()
+		{
+			using (var client = new M2XClient(ApiKey))
+			{
+				var device = client.Device(DeviceId);
+				var locationResult = await device.Location();
+				return locationResult.Raw;
 			}
 		}
 	}
