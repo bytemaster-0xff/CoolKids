@@ -16,6 +16,7 @@ using CoolKids.Camera;
 using CoolKids.Services.MicrosoftCognitiveServices;
 using CoolKids.Services.Att;
 using System.Threading.Tasks;
+using System.Net.Http;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -30,6 +31,8 @@ namespace CoolKids.Uwp
 		bool Cam1IsRunning = false;
 		int CurrentTemp { get; set; }
 		int DefaultTemp = 75;
+		//DateTime? ParentLastSeen { get; set; }
+		bool AlarmHasBeenSent = false;
 
 		System.Threading.Timer UpdateTimer;
 
@@ -40,6 +43,18 @@ namespace CoolKids.Uwp
 
 			CurrentTemp = DefaultTemp;
 			SetupAutomation();
+
+			//	Loaded += MainPage_Loaded;
+			//}
+
+			//private async void MainPage_Loaded(object sender, RoutedEventArgs e)
+			//{
+			//	await GetImage();
+			//	var cogResult = await ComputerVisionApi.Detect(Cam1.CurrentBytes);
+			//	if (Cam1.CurrentPicture != null)
+			//	{
+			//		Cam1Image.Source = Cam1.CurrentPicture;
+			//	}
 		}
 
 		private async void SetupAutomation()
@@ -52,7 +67,7 @@ namespace CoolKids.Uwp
 
 			if (!Cam1IsRunning)
 			{
-				UpdateTimer = new System.Threading.Timer(UpdateTimerCallback, null, 0, 3000);
+				UpdateTimer = new System.Threading.Timer(UpdateTimerCallback, null, 0, 3250);
 				Cam1IsRunning = true;
 			}
 		}
@@ -72,10 +87,45 @@ namespace CoolKids.Uwp
 
 			if (Cam1.CurrentBytes != null)
 			{
+				var m2x = new M2xApi();
+
 				// cog services request
-				await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
+				var cogResult = await ComputerVisionApi.Detect(Cam1.CurrentBytes);
+				//if (ParentLastSeen.HasValue && !cogResult.ToLowerInvariant().Contains("people"))
+				if (!cogResult.ToLowerInvariant().Contains("people"))
 				{
-					Cam1Result.Text = $"{DateTime.Now.Ticks} - {await FaceApi.Detect(Cam1.CurrentBytes)}";
+					if (!AlarmHasBeenSent)
+					{
+						AlarmHasBeenSent = true;
+
+						var hc = new HttpClient();
+
+						await hc.GetStringAsync("http://192.168.1.8:9001?01");
+						await hc.GetStringAsync("http://192.168.1.8:9001?11");
+
+						await Task.Delay(2000);
+
+						await hc.GetStringAsync("http://192.168.1.8:9001?00");
+						await hc.GetStringAsync("http://192.168.1.8:9001?10");
+
+						await m2x.PostValue("alarm_condition", "true");
+					}
+				}
+				else if (cogResult.ToLowerInvariant().Contains("people"))
+				{
+					await m2x.PostValue("alarm_condition", "false");
+					await m2x.PostValue(M2xApi.TemperatureType.Interior, CurrentTemp);
+				}
+				else
+				{
+					//ParentLastSeen = DateTime.Now;
+					await m2x.PostValue("alarm_condition", "false");
+					await m2x.PostValue(M2xApi.TemperatureType.Interior, CurrentTemp);
+				}
+
+				await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+				{
+					Cam1Result.Text = $"{DateTime.Now.Ticks} - {cogResult}";
 				});
 			}
 

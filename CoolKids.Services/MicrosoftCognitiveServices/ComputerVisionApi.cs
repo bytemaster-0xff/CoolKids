@@ -21,7 +21,7 @@ namespace CoolKids.Services.MicrosoftCognitiveServices
 			client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", ApiKey);
 
 			// Request parameters
-			queryString["visualFeatures"] = "Categories,Tags,Description,Faces";
+			queryString["visualFeatures"] = "Description, Faces"; // "Categories,Tags,Description,Faces";
 			var uri = "https://api.projectoxford.ai/vision/v1.0/analyze?" + queryString;
 
 			HttpResponseMessage response;
